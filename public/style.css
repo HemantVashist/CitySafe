@@ -1,0 +1,10 @@
+#sos {
+  background:crimson;
+  margin: 30px;
+  padding: 120px;
+  border-radius: 150px;
+}
+
+.btn.btn-success {
+  margin-top: 0.8rem;
+}
