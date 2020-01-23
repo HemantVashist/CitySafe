@@ -1,0 +1,46 @@
+<%- include("./partials/header") %>
+
+  <div id ="map" style = "height: 100px, width: 50%"> </div>
+
+  <script type="text/javascript">
+
+    function initMap() {
+      
+      var lat = <%= user.coordinates.latitude%>;
+      var lng = <%= user.coordinates.longitude%>;
+
+      var pos = {
+        "lat": lat,
+        "lng": lng
+      }
+      
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: pos
+      });
+
+      var marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        title: 'Victim Location'
+      }); 
+
+      var contentString ="Hemant " 
+
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+
+    }
+
+  </script>
+
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-UAiGyhH8dXYgP392DYYTEmA5vSbn6wI&callback=initMap">
+  </script>
+
+<%- include("./partials/footer") %>

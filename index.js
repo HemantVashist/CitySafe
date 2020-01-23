@@ -3,7 +3,7 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 var mongoose = require("mongoose")
 const Nexmo = require("nexmo")
-
+const request = require('request')
 var app = express()
 app.set("view engine","ejs")
 app.use(express.static("public"))
@@ -25,13 +25,7 @@ const nexmo = new Nexmo({
   apiSecret: 'supp7XbuvpuWq89X',
 });
 
-app.get('/',(req,res)=>{
-  res.render("home")
-})
-
-app.post("/contact",(req,res)=>{
-
-  var u1 = {
+var u1 = {
     name: "Hemant",
     phone: 918619247487,
     coordinates: {
@@ -39,6 +33,21 @@ app.post("/contact",(req,res)=>{
       longitude: 77.04492139999999
     }
   };
+
+app.get('/',(req,res)=>{
+  res.render("home")
+})
+
+
+
+app.post('/map',(req,res)=>{
+
+    res.render("map",{user:u1})
+
+})
+
+
+app.post("/contact",(req,res)=>{
 
   //SMS API
   var link = "https://link.foruser.location"
@@ -49,6 +58,9 @@ app.post("/contact",(req,res)=>{
   res.redirect("/");
 
 })
+
+
+
 
 port = process.env.PORT || 8083
 app.listen(port,()=>{
