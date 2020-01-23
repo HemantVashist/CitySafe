@@ -20,6 +20,16 @@ mongoose
 
 var User = require("./models/User")
 
+var u1 = {
+  name: "Mitul",
+  phone: 918619247487,
+  coordinates: {
+    latitude: 28.618254200000003,
+    longitude: 77.04492139999999
+  }
+};
+
+
 const nexmo = new Nexmo({
   apiKey: 'd3171a29',
   apiSecret: 'supp7XbuvpuWq89X',
@@ -31,15 +41,6 @@ app.get('/',(req,res)=>{
 
 app.post("/contact",(req,res)=>{
 
-  var u1 = {
-    name: "Hemant",
-    phone: 918619247487,
-    coordinates: {
-      latitude: 28.618254200000003,
-      longitude: 77.04492139999999
-    }
-  };
-
   //SMS API
   var link = "https://link.foruser.location"
   var msg = `${u1.name} might be in danger. See more at ${link}`
@@ -48,6 +49,11 @@ app.post("/contact",(req,res)=>{
 
   res.redirect("/");
 
+})
+
+//GUIDELINES GENERATION
+app.get(`/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`,(req,res)=>{
+  
 })
 
 port = process.env.PORT || 8083

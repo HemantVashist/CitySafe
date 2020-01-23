@@ -9,6 +9,8 @@ df = pd.read_pickle('IPC(Examined_Levels).pkl')
 df1 = pd.read_pickle('IPC(Final).pkl')
 cols = df.columns
 
+print()
+
 def find_district(latitude, longitude):
     df['distance'] = df[df.columns[-1]].map(tuple).map(lambda x: (float(x[0]) - latitude)**2 + (float(x[1]) - longitude)**2)
     x = np.where(df['distance'] == df['distance'].min())[0][0]
@@ -21,7 +23,7 @@ def coords(latitude, longitude):
     if request.method == "GET":        
         output = {}
         index = find_district(float(latitude), float(longitude))
-        name = df.loc[index, cols[0]] + ' in ' + df.loc[index, cols[-2]]
+        name = df.loc[index, cols[0]] + ',' + df.loc[index, cols[-2]]
         features = df.loc[index, cols[1]: cols[-3]]
         data = df1.loc[index, cols[1]: cols[-3]]
         temp = [(x, y.item(), z.item()) for x, y, z in zip(cols[1:-3], features, data)]
