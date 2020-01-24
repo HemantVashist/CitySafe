@@ -15,7 +15,8 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "mongoose": "^5.8.9",
-    "nexmo": "^2.6.0"
+    "nexmo": "^2.6.0",
+    "package.json": "^2.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

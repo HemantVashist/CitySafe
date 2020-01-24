@@ -3,7 +3,7 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 var mongoose = require("mongoose")
 const Nexmo = require("nexmo")
-
+const request = require('request')
 var app = express()
 app.set("view engine","ejs")
 app.use(express.static("public"))
@@ -21,14 +21,40 @@ mongoose
 var User = require("./models/User")
 
 var u1 = {
-  name: "Mitul",
-  phone: 918619247487,
+  name: "Hemant",
   coordinates: {
     latitude: 28.618254200000003,
     longitude: 77.04492139999999
   }
 };
 
+var guidelines = {
+    "Murder":[
+      "Always keep a tool for self-defence handy - like a pepper spray.",
+      "Travel in groups. Avoid sparsely populated areas."
+    ],
+    "Negligence":[
+      "Ensure anyone who provides any form of service to you is professionally certified."
+    ],
+    "Theft and Robbery":[
+      "Call the national helpline at 112 if you see anyone suspicious following you.",
+      "Travel in groups. Avoid sparsely populated areas."
+    ],
+    "Vehicle Theft":[
+      "Ensure your car doors are locked at all times.",
+      "Avoid travelling by inner city lanes and sparsely populated areas."
+    ],
+    "Criminal Trespassing":[
+      "Do not open the doors/gates of your residence to visitors without prior notice.",
+      "Ensure your residence has proper fencing to prevent trespassers."
+    ],
+    "Stalking":[
+      "Call the national helpline 112 if you see anyone suspicious following you.",
+      "Avoid staying out after dark."
+    ]
+};
+
+var phones = [918130858595,918619247487]
 
 const nexmo = new Nexmo({
   apiKey: 'd3171a29',
@@ -36,7 +62,25 @@ const nexmo = new Nexmo({
 });
 
 app.get('/',(req,res)=>{
-  res.render("home")
+
+  var uri = `http://localhost:5000/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`
+
+  console.log(uri);
+
+  request.get({
+    url:uri,
+    json:true,
+    headers: {'User-Agent': 'request'}
+  }, (err, re, data) => {
+      if (err) {
+        console.log('Error:', err);
+      } else if (res.statusCode !== 200) {
+        console.log('Status:', res.statusCode);
+      } else {
+        // data is already parsed as JSON:
+        console.log(data);      
+      }
+    });
 })
 
 app.post("/contact",(req,res)=>{
@@ -45,16 +89,22 @@ app.post("/contact",(req,res)=>{
   var link = "https://link.foruser.location"
   var msg = `${u1.name} might be in danger. See more at ${link}`
 
-  nexmo.message.sendSms("CitySafe",u1.phone,msg);
-
+  phones.forEach((phone)=>{
+    nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if(responseData.messages[0]['status'] === "0") {
+          console.log("Message sent successfully.");
+        } else {
+          console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+        }
+      }
+    })
+  })
   res.redirect("/");
-
 })
 
-//GUIDELINES GENERATION
-app.get(`/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`,(req,res)=>{
-  
-})
 
 port = process.env.PORT || 8083
 app.listen(port,()=>{
