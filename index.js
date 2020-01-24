@@ -29,6 +29,18 @@ var u1 = {
 };
 
 var guidelines = {
+    "Assault on Women":[
+      "Information1 to be added",
+      "Information2 to be added"
+    ],
+    "Fraudulent Activity":[
+      "Information1 to be added",
+      "Information2 to be added"
+    ],
+    "Road Accidents":[
+      "Information1 to be added",
+      "Information2 to be added"
+    ],
     "Murder":[
       "Always keep a tool for self-defence handy - like a pepper spray.",
       "Travel in groups. Avoid sparsely populated areas."
@@ -78,9 +90,8 @@ app.get('/',(req,res)=>{
         console.log('Status:', res.statusCode);
       } else {
         // data is already parsed as JSON:
-        var name = data["Name of district"].split(",")
-        var arr = Object.keys(data).map((key)=>{
-        })     
+        // console.log(data);
+        res.render("home",{data:data,guides:guidelines});     
       }
     });
 })

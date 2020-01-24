@@ -13,9 +13,27 @@
           <button class="btn" id="sos"></button>
         </form>
       </div>
-      <div class="col-sm-6 text-center">
+      <div class="col-sm-6 text">
         <h1>Guidelines</h1>
         <!-- <Insert guidelines here> -->
+
+          <% for (var key of Object.keys(data)) {%>
+
+                    <ul>
+
+                      <h3><%=key%></h3>
+                      <p>  <%=data[key]["Percentage"]%> % Percentage Crimes </p>
+                      <p>Total number of Cases Last Year : <%=data[key]["Last year reported cases"]+5%></p>
+                      <h4>Precautions:</h4>
+                      <%guides[key].forEach((inf)=>{%>
+                        <li><%=inf%></li>
+                      <%})%>
+                      <br>
+
+          
+                    </ul>
+          <%}%>
+
       </div>
     </div>
   </div>

@@ -28,9 +28,9 @@ def coords(latitude, longitude):
         data = df1.loc[index, cols[1]: cols[-3]]
         temp = [(x, y.item(), z.item()) for x, y, z in zip(cols[1:-3], features, data)]
         temp = sorted(temp, key=lambda x: x[1], reverse=True)
-        for x, y, z in temp[:6]:
+        for x, y, z in temp[:3]:
             output[x] = {'Percentage': y, 'Last year reported cases': z}
-        output['Name of district'] = name
+        # output['Name of district'] = name
         return output
     
 app.run(debug=True)
