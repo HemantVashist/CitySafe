@@ -65,7 +65,7 @@ app.get('/',(req,res)=>{
 
   var uri = `http://localhost:5000/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`
 
-  console.log(uri);
+  // console.log(uri);
 
   request.get({
     url:uri,
@@ -78,9 +78,17 @@ app.get('/',(req,res)=>{
         console.log('Status:', res.statusCode);
       } else {
         // data is already parsed as JSON:
-        console.log(data);      
+        var name = data["Name of district"].split(",")
+        var arr = Object.keys(data).map((key)=>{
+        })     
       }
     });
+})
+
+app.post('/map',(req,res)=>{
+
+  res.render("map",{user:u1})
+
 })
 
 app.post("/contact",(req,res)=>{
@@ -104,7 +112,6 @@ app.post("/contact",(req,res)=>{
   })
   res.redirect("/");
 })
-
 
 port = process.env.PORT || 8083
 app.listen(port,()=>{
