@@ -25,6 +25,8 @@ var u1 = {
   coordinates: {
     latitude: 28.618254200000003,
     longitude: 77.04492139999999
+    // latitude: 28.5562,
+    // longitude: 77.1000
   }
 };
 
@@ -66,11 +68,11 @@ var guidelines = {
     ]
 };
 
-var phones = [918130858595,918619247487]
+var phones = [918******595,918******487]
 
 const nexmo = new Nexmo({
-  apiKey: 'd3171a29',
-  apiSecret: 'supp7XbuvpuWq89X',
+  apiKey: '<apikey>',
+  apiSecret: '<apisecret>',
 });
 
 app.get('/',(req,res)=>{
