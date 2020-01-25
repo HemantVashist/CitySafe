@@ -23,8 +23,8 @@ var User = require("./models/User")
 var u1 = {
   name: "Hemant",
   coordinates: {
-    latitude: 28.618254200000003,
-    longitude: 77.04492139999999
+    latitude: 28.6129362,
+    longitude: 77.0358646
     // latitude: 28.5562,
     // longitude: 77.1000
   }
@@ -68,7 +68,8 @@ var guidelines = {
     ]
 };
 
-var phones = [918******595,918******487]
+// var phones = [918******595,918******487]
+var phones = []
 
 const nexmo = new Nexmo({
   apiKey: '<apikey>',
