@@ -1,10 +1,5 @@
 <%- include("./partials/header") %>
 
-  <div><form action="/map" method = "POST">
-          <button id ="map" >location</button>
-        </form>
-  </div>
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 text-center">
@@ -19,19 +14,17 @@
         
           <% for (var key of Object.keys(data)) {%>
 
-                    <ul>
-
-                      <h3><%=key%></h3>
-                      <p>  <%=data[key]["Percentage"]%> % Percentage Crimes </p>
-                      <p>Total number of Cases Last Year : <%=data[key]["Last year reported cases"]+5%></p>
-                      <h4>Precautions:</h4>
-                      <%guides[key].forEach((inf)=>{%>
-                        <li><%=inf%></li>
-                      <%})%>
-                      <br>
-
-          
-                    </ul>
+            <
+              <h3><%=key%></h3>
+              <p>  <%=data[key]["Percentage"]%> % Percentage Crimes </p>
+              <p>Total number of Cases Last Year : <%=data[key]["Last year reported cases"]+5%></p>
+              <h4>Precautions:</h4>
+              <%guides[key].forEach((inf)=>{%>
+                <li><%=inf%></li>
+              <%})%>
+              <
+  
+            </ul>
           <%}%>
 
       </div>
