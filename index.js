@@ -23,10 +23,8 @@ var User = require("./models/User")
 var u1 = {
   name: "Hemant",
   coordinates: {
-    latitude: 28.6129362,
-    longitude: 77.0358646
-    // latitude: 28.5562,
-    // longitude: 77.1000
+    latitude: undefined,
+    longitude: undefined
   }
 };
 
@@ -77,54 +75,77 @@ const nexmo = new Nexmo({
 });
 
 app.get('/',(req,res)=>{
+  
 
   var uri = `http://localhost:5000/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`
 
   // console.log(uri);
 
-  request.get({
-    url:uri,
-    json:true,
-    headers: {'User-Agent': 'request'}
-  }, (err, re, data) => {
-      if (err) {
-        console.log('Error:', err);
-      } else if (res.statusCode !== 200) {
-        console.log('Status:', res.statusCode);
-      } else {
-        // data is already parsed as JSON:
-        // console.log(data);
-        res.render("home",{data:data,guides:guidelines});     
-      }
+  if(u1.coordinates.latitude && u1.coordinates.longitude){
+    request.get({
+      url:uri,
+      json:true,
+      headers: {'User-Agent': 'request'}
+    }, (err, re, data) => {
+        if (err) {
+          console.log('Error:', err);
+        } else if (res.statusCode !== 200) {
+          console.log('Status:', res.statusCode);
+        } else {
+          // data is already parsed as JSON:
+          // console.log(data);
+          res.render("home",{data:data,guides:guidelines,found:true});     
+        }
     });
+  }else{
+    res.render("home",{found:false});
+  }
+})
+
+app.post("/",(req,res)=>{
+  u1.coordinates.latitude = req.body.coords.latitude
+  u1.coordinates.longitude = req.body.coords.longitude
+  // res.redirect(req.get('referer'))
+  res.send({redirect: "/"})
 })
 
 app.post('/map',(req,res)=>{
 
-  res.render("map",{user:u1})
+  if(u1.coordinates.latitude!=undefined && u1.coordinates.longitude!=undefined){
+    res.render("map",{user:u1})
+  }else{
+    res.send("Press SOS button before map view")
+  }
 
 })
 
 app.post("/contact",(req,res)=>{
 
+  //getting location coords from client
+  u1.coordinates.latitude = req.body.coords.latitude
+  u1.coordinates.longitude = req.body.coords.longitude
+
+  console.log(u1)
+
   //SMS API
   var link = "https://link.foruser.location"
   var msg = `${u1.name} might be in danger. See more at ${link}`
 
-  phones.forEach((phone)=>{
-    nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if(responseData.messages[0]['status'] === "0") {
-          console.log("Message sent successfully.");
-        } else {
-          console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-        }
-      }
-    })
-  })
-  res.redirect("/");
+  // phones.forEach((phone)=>{
+  //   nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       if(responseData.messages[0]['status'] === "0") {
+  //         console.log("Message sent successfully.");
+  //       } else {
+  //         console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+  //       }
+  //     }
+  //   })
+  // })
+  // res.redirect("/");
+  res.send({redirect: "/"})
 })
 
 port = process.env.PORT || 8083
