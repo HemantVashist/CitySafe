@@ -22,11 +22,13 @@ var User = require("./models/User")
 
 var u1 = {
   name: "Hemant",
-  coordinates: {
-    latitude: 28.618254200000003,
-    longitude: 77.04492139999999
-    // latitude:12.9716,
-    // longitude:73.5946
+  coordinates_sos: {
+    latitude: undefined,
+    longitude: undefined
+  },
+  coordinates_gl: {
+    latitude: undefined,
+    longitude: undefined
   }
 };
 
@@ -73,62 +75,84 @@ var guidelines = {
     
 };
 
-var phones = [918130858595,918619247487]
+// var phones = [918******595,918******487]
+var phones = []
 
 const nexmo = new Nexmo({
-  apiKey: 'd3171a29',
-  apiSecret: 'supp7XbuvpuWq89X',
+  apiKey: '<apikey>',
+  apiSecret: '<apisecret>',
 });
 
 app.get('/',(req,res)=>{
+  
 
-  var uri = `http://localhost:5000/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`
+  var uri = `http://localhost:5000/coords/${u1.coordinates_gl.latitude}/${u1.coordinates_gl.longitude}`
 
   // console.log(uri);
 
-  request.get({
-    url:uri,
-    json:true,
-    headers: {'User-Agent': 'request'}
-  }, (err, re, data) => {
-      if (err) {
-        console.log('Error:', err);
-      } else if (res.statusCode !== 200) {
-        console.log('Status:', res.statusCode);
-      } else {
-        // data is already parsed as JSON:
-        console.log(data);
-        res.render("home",{data:data,guides:guidelines});     
-      }
+  if(u1.coordinates_gl.latitude && u1.coordinates_gl.longitude){
+    request.get({
+      url:uri,
+      json:true,
+      headers: {'User-Agent': 'request'}
+    }, (err, response, data) => {
+        if (err) {
+          console.log('Error:', err);
+        } else if (res.statusCode !== 200) {
+          console.log('Status:', res.statusCode);
+        } else {
+          // data is already parsed as JSON:
+          // console.log(data);
+          res.render("home",{data:data,guides:guidelines,found:true});     
+        }
     });
+  }else{
+    res.render("home",{found:false});
+  }
+})
+
+app.post("/",(req,res)=>{
+  u1.coordinates_gl.latitude = req.body.coords.latitude
+  u1.coordinates_gl.longitude = req.body.coords.longitude
+  // res.redirect(req.get('referer'))
+  res.send({redirect: "/"})
 })
 
 app.post('/map',(req,res)=>{
 
-  res.render("map",{user:u1})
+  if(u1.coordinates_sos.latitude!=undefined && u1.coordinates_sos.longitude!=undefined){
+    res.render("map",{user:u1})
+  }else{
+    res.send("Press SOS button before map view")
+  }
 
 })
 
 app.post("/contact",(req,res)=>{
 
+  //getting location coords from client
+  u1.coordinates_sos.latitude = req.body.coords.latitude
+  u1.coordinates_sos.longitude = req.body.coords.longitude
+
   //SMS API
   var link = "https://link.foruser.location"
   var msg = `${u1.name} might be in danger. See more at ${link}`
 
-  phones.forEach((phone)=>{
-    nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if(responseData.messages[0]['status'] === "0") {
-          console.log("Message sent successfully.");
-        } else {
-          console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-        }
-      }
-    })
-  })
-  res.redirect("/");
+  // phones.forEach((phone)=>{
+  //   nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       if(responseData.messages[0]['status'] === "0") {
+  //         console.log("Message sent successfully.");
+  //       } else {
+  //         console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+  //       }
+  //     }
+  //   })
+  // })
+  // res.redirect("/");
+  res.send({redirect: "/"})
 })
 
 port = process.env.PORT || 8083

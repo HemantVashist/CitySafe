@@ -1,41 +1,67 @@
 <%- include("./partials/header") %>
 
-  <div><form action="/map" method = "POST">
-          <button id ="map" >location</button>
-        </form>
-  </div>
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 text-center">
-        <h1>SOS Button</h1>
-        <form action="/contact" method="POST">
-          <button class="btn" id="sos" style=="font-size:10px">SOS</button>
-        </form>
+          <button class="btn" id="sos" type="button" onclick="pressedSOS()">SOS</button>
       </div>
-      <div class="col-sm-6 text">
-        <h1>Guidelines</h1>
+      <div class="col-sm-6 text" id="guidelines">
+        <h1>Guidelines  <button type="button" class="btn btn-success btn-sm" onclick="sendLocation('/')">Refresh guidelines</button></h1>
         <!-- <Insert guidelines here> -->
 
-          <% for (var key of Object.keys(data)) {%>
+          <% if(found) { %>
 
-                    <ul>
+            <% for (var key of Object.keys(data)) {%>
+              
+                <h3><%=key%></h3>
+                <p>  <%=data[key]["Percentage"]%> % Percentage Crimes </p>
+                <p>Total number of Cases Last Year : <%=data[key]["Last year reported cases"]%></p>
+                <h4>Precautions:</h4>
+                <%guides[key].forEach(function(inf){%>
+                  <li><%=inf%></li>
+                <%})%>
+    
+              </ul>
+            <%}%>
 
-                      <h3><%=key%></h3>
-                      <p>  <%=data[key]["Percentage"]%> % Percentage Crimes </p>
-                      <p>Total number of Cases Last Year : <%=data[key]["Last year reported cases"]+5%></p>
-                      <h4>Precautions:</h4>
-                      <%guides[key].forEach((inf)=>{%>
-                        <li><%=inf%></li>
-                      <%})%>
-                      <br>
-
-          
-                    </ul>
-          <%}%>
+          <% }else{ %>
+            <h5>No guidelines yet. Press the button above to refresh.</h5>
+          <% } %>
 
       </div>
     </div>
   </div>
+
+  <script>
+    function pressedSOS(){
+      var ans = confirm("Are you sure?")
+      if(ans===true){
+        sendLocation('/contact')
+      }
+    }
+    function sendLocation(route){
+
+      navigator.geolocation.getCurrentPosition(function(pos){
+        $.ajax({
+          type: "POST",
+          url: route,
+          data: {coords:pos.coords},
+          success: function(data){
+            console.log(data)
+            if(typeof data.redirect == "string"){
+              window.location = data.redirect
+            }
+          },
+          error: function(jqXHR,textStatus,err){
+            console.log(`text status ${textStatus} ,err ${err}`)
+          }
+        })
+      },function(){
+        console.log("Location couldn't be sent to the server.")
+      },{
+        enableHighAccuracy: true
+      })
+    }
+  </script>
 
 <%- include("./partials/footer") %>
