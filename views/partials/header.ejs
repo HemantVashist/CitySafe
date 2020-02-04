@@ -11,6 +11,11 @@
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous"></script>
+    
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.7.0/mapbox-gl.css' rel='stylesheet' />
+
 </head>
 <body>
     
@@ -20,9 +25,14 @@
                 <div class="navbar-header"><a href="/" class="navbar-brand">CitySafe</a></div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
-                      <form action="/map" method="POST">
-                        <button class="btn btn-success">Go to Map View</button>
-                      </form>   
+                        <li>
+                            <button class="btn btn-success">Safest Route</button>
+                        </li>
+                        <li>
+                            <form action="/map" method="POST">
+                                <button class="btn btn-success">Go to Map View</button>
+                            </form> 
+                        </li>
                     </ul>
                 </div>
             </div>
