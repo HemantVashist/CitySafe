@@ -1,46 +1,37 @@
 <%- include("./partials/header") %>
 
-  <div id ="map" style = "height: 100px, width: 50%"> </div>
+<!-- the map -->
+<div id='map'></div>
 
-  <script type="text/javascript">
+<script>
+  //mapboxgl.accessToken = "pk.eyJ1IjoiaG1hbnR2ODMiLCJhIjoiY2s2N3NkbGE1MWJ4NjNwbzc2dzQ5aXk4dCJ9.E0wf1107lt7EdQ6z-v4Rhg"
+  var map = new mapboxgl.Map({
+    container: 'map',
+    center: [77.0448,28.6182],
+    zoom: 15,
+    minzoom: 10,
+    style: 'mapbox://styles/mapbox/streets-v11',
+    interactive: true,
+    keyboard: true,
+    accessToken: 'pk.eyJ1IjoiaG1hbnR2ODMiLCJhIjoiY2s2N3NkbGE1MWJ4NjNwbzc2dzQ5aXk4dCJ9.E0wf1107lt7EdQ6z-v4Rhg'
+  });
 
-    function initMap() {
-      
-      var lat = <%= user.coordinates_sos.latitude %>
-      var lng = <%= user.coordinates_sos.longitude %>
+  var lng = <%= user.coordinates_sos.longitude %>
+  var lat = <%= user.coordinates_sos.latitude %>
 
-      var pos = {
-        "lat": lat,
-        "lng": lng
-      }
-      
-      var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 15,
-        center: pos
-      });
+  var popup = new mapboxgl.Popup()
+  .setLngLat([lng,lat])
+  .setHTML("<p>Hemant is in danger.</p>")
+  .setMaxWidth("200px")
+  .addTo(map)
+  
 
-      var marker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        title: 'Victim Location'
-      }); 
-
-      var contentString ="Hemant " 
-
-      var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
-
-    }
-
-  </script>
-
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-UAiGyhH8dXYgP392DYYTEmA5vSbn6wI&callback=initMap">
-  </script>
+  var marker = new mapboxgl.Marker({
+    color: '#CC1F1F',
+  })
+  .setLngLat([lng,lat])
+  .setPopup(popup)
+  .addTo(map)
+</script>
 
 <%- include("./partials/footer") %>
