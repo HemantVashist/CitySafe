@@ -22,7 +22,11 @@ var User = require("./models/User")
 
 var u1 = {
   name: "Hemant",
-  coordinates: {
+  coordinates_sos: {
+    latitude: undefined,
+    longitude: undefined
+  },
+  coordinates_gl: {
     latitude: undefined,
     longitude: undefined
   }
@@ -77,16 +81,16 @@ const nexmo = new Nexmo({
 app.get('/',(req,res)=>{
   
 
-  var uri = `http://localhost:5000/coords/${u1.coordinates.latitude}/${u1.coordinates.longitude}`
+  var uri = `http://localhost:5000/coords/${u1.coordinates_gl.latitude}/${u1.coordinates_gl.longitude}`
 
   // console.log(uri);
 
-  if(u1.coordinates.latitude && u1.coordinates.longitude){
+  if(u1.coordinates_gl.latitude && u1.coordinates_gl.longitude){
     request.get({
       url:uri,
       json:true,
       headers: {'User-Agent': 'request'}
-    }, (err, re, data) => {
+    }, (err, response, data) => {
         if (err) {
           console.log('Error:', err);
         } else if (res.statusCode !== 200) {
@@ -103,15 +107,15 @@ app.get('/',(req,res)=>{
 })
 
 app.post("/",(req,res)=>{
-  u1.coordinates.latitude = req.body.coords.latitude
-  u1.coordinates.longitude = req.body.coords.longitude
+  u1.coordinates_gl.latitude = req.body.coords.latitude
+  u1.coordinates_gl.longitude = req.body.coords.longitude
   // res.redirect(req.get('referer'))
   res.send({redirect: "/"})
 })
 
 app.post('/map',(req,res)=>{
 
-  if(u1.coordinates.latitude!=undefined && u1.coordinates.longitude!=undefined){
+  if(u1.coordinates_sos.latitude!=undefined && u1.coordinates_sos.longitude!=undefined){
     res.render("map",{user:u1})
   }else{
     res.send("Press SOS button before map view")
@@ -122,10 +126,8 @@ app.post('/map',(req,res)=>{
 app.post("/contact",(req,res)=>{
 
   //getting location coords from client
-  u1.coordinates.latitude = req.body.coords.latitude
-  u1.coordinates.longitude = req.body.coords.longitude
-
-  console.log(u1)
+  u1.coordinates_sos.latitude = req.body.coords.latitude
+  u1.coordinates_sos.longitude = req.body.coords.longitude
 
   //SMS API
   var link = "https://link.foruser.location"

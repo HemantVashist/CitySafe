@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6 text-center">
-          <button class="btn" id="sos" type="button" onclick="sendLocation('/contact')">SOS</button>
+          <button class="btn" id="sos" type="button" onclick="pressedSOS()">SOS</button>
       </div>
       <div class="col-sm-6 text" id="guidelines">
         <h1>Guidelines  <button type="button" class="btn btn-success btn-sm" onclick="sendLocation('/')">Refresh guidelines</button></h1>
@@ -33,6 +33,12 @@
   </div>
 
   <script>
+    function pressedSOS(){
+      var ans = confirm("Are you sure?")
+      if(ans===true){
+        sendLocation('/contact')
+      }
+    }
     function sendLocation(route){
 
       navigator.geolocation.getCurrentPosition(function(pos){
@@ -52,6 +58,8 @@
         })
       },function(){
         console.log("Location couldn't be sent to the server.")
+      },{
+        enableHighAccuracy: true
       })
     }
   </script>
