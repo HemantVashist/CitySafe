@@ -31,6 +31,7 @@ def coords(latitude, longitude):
         for x, y, z in temp[:3]:
             output[x] = {'Percentage': y, 'Last year reported cases': z}
         # output['Name of district'] = name
+        # output = sorted(output, key=lambda x: , reverse=True)
         return output
     
 app.run(debug=True)

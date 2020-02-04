@@ -25,6 +25,8 @@ var u1 = {
   coordinates: {
     latitude: 28.618254200000003,
     longitude: 77.04492139999999
+    // latitude:12.9716,
+    // longitude:73.5946
   }
 };
 
@@ -63,7 +65,12 @@ var guidelines = {
     "Stalking":[
       "Call the national helpline 112 if you see anyone suspicious following you.",
       "Avoid staying out after dark."
-    ]
+    ],
+    "Road Hazard":[
+      "Information1 to be added",
+      "Information2 to be added"  
+    ],
+    
 };
 
 var phones = [918130858595,918619247487]
@@ -90,7 +97,7 @@ app.get('/',(req,res)=>{
         console.log('Status:', res.statusCode);
       } else {
         // data is already parsed as JSON:
-        // console.log(data);
+        console.log(data);
         res.render("home",{data:data,guides:guidelines});     
       }
     });
