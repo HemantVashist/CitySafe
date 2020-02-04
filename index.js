@@ -118,7 +118,13 @@ app.post("/",(req,res)=>{
   res.send({redirect: "/"})
 })
 
-app.post('/map',(req,res)=>{
+app.get('/safe-map',(req,res)=>{
+
+    res.render("safe-map");
+
+})
+
+app.get('/map',(req,res)=>{
 
   if(u1.coordinates_sos.latitude!=undefined && u1.coordinates_sos.longitude!=undefined){
     res.render("map",{user:u1})
