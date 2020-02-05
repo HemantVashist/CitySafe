@@ -159,7 +159,7 @@ app.post("/contact",(req,res)=>{
 
 app.get("/")
 
-port = process.env.PORT || 8083
+port = process.env.PORT || 3000
 app.listen(port,()=>{
   console.log(`App started at port ${port}`)
 })

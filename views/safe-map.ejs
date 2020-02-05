@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Get driving directions from one location to another</title>
+    <title>Safe Map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
@@ -168,25 +168,11 @@
         req.open('GET', url, true);
         req.onload  = function() {
             var jsonResponse = req.response;
+            console.log(jsonResponse.routes)
 
             var index = 0; 
 
-            //Calling python server api 
-            
-            $.ajax({
-                type:"POST",
-                crossDomain:true,
-                headers: {  'Access-Control-Allow-Origin': 'http://localhost:5000' },
-                url :"http://localhost:5000/safepath",
-                data :{data:jsonResponse},
-                success : function(data){
-                    alert("Index returned this thing : "+ data);
-                    index = parseInt(data); 
-                },
-                error: function(jqXHR,textStatus,err){
-                    console.log("Didn't get the response");
-                }
-            })
+            //Calling python server api
 
 
             var distance = jsonResponse.routes[index].distance*0.001;

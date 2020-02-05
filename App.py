@@ -1,5 +1,6 @@
-from flask import Flask, request
+from flask import Flask,jsonify, request
 from flask_cors import CORS
+import json
 import traceback
 import sys
 import pandas as pd
@@ -37,12 +38,14 @@ def coords(latitude, longitude):
         # output = sorted(output, key=lambda x: , reverse=True)
         return output
     
-@app.route('/safepath', methods=["POST"])
+@app.route('/safepath', methods=["GET","POST"])
 
 def bestpath():
     if request.method == "POST":
-        # print(len(request.form["routes"]));
-        print("This should be printed everytime you make a request");
-        return "3";
+        # content = json.loads(request.data)
+        # print(content)
+        print("This should be printed everytime you make a request")
+        return "3"
+    return "5"
 
 app.run(debug=True)
