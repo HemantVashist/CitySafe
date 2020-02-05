@@ -26,6 +26,13 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <form action="/call" method="POST">
+                                <input type="number" name="phoneNumber" placeholder="phoneNumber">
+                                <input type="number" name="timer" min="1" max="300" step="1" placeholder="timer(in seconds)">
+                                <button type="submit" class="btn btn-success">Fake Call</button>
+                            </form>
+                        </li>
+                        <li>
                             <button class="btn btn-success"><a href="/safe-map">Safest Route</a></button>
                         </li>
                         <li>

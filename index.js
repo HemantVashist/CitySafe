@@ -1,7 +1,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
-var mongoose = require("mongoose")
 const Nexmo = require("nexmo")
 const request = require('request')
 var app = express()
@@ -10,14 +9,6 @@ app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.static(__dirname+"/public"))
 app.use(cors())
-
-
-const db = require("./config/keys").mongoURI;
-
-mongoose
-  .connect(db,{useNewUrlParser:true,useUnifiedTopology:true})
-  .then(()=>{console.log("MongoDB connected.")})
-  .catch((err)=>{console.log(err)})
 
 var User = require("./models/User")
 
@@ -81,11 +72,12 @@ var phones = [918130858595,918619247487]
 const nexmo = new Nexmo({
   apiKey: 'd3171a29',
   apiSecret: 'supp7XbuvpuWq89X',
-});
+  applicationId: 'b2b51d05-84a0-4949-837b-8abccdf6c62d',
+  privateKey: './private.key'
+})
 
 app.get('/',(req,res)=>{
   
-
   var uri = `http://localhost:5000/coords/${u1.coordinates_gl.latitude}/${u1.coordinates_gl.longitude}`
 
   if(u1.coordinates_gl.latitude && u1.coordinates_gl.longitude){
@@ -131,6 +123,13 @@ app.get('/map',(req,res)=>{
 
 })
 
+app.post("/call",(req,res)=>{
+  var phoneNumber = req.body.phoneNumber;
+  var timer = req.body.timer;
+
+  setTimeout(makeCall,timer*1000,phoneNumber)
+  res.redirect("/")
+})
 app.post("/contact",(req,res)=>{
 
   //getting location coords from client
@@ -158,6 +157,24 @@ app.post("/contact",(req,res)=>{
 })
 
 app.get("/")
+
+function makeCall(phoneNumber){
+  const ncco = [
+    {
+      action: 'talk',
+      voiceName: 'Kendra',
+      text: 'You are welcome.',
+    },
+  ];
+  nexmo.calls.create({
+    to: [{ type: 'phone', number: phoneNumber }],
+    from: { type: 'phone', number: '918619247487' },
+    ncco,
+  },(err, result) => {
+      console.log(err || result);
+    },
+  );
+}
 
 port = process.env.PORT || 3000
 app.listen(port,()=>{
