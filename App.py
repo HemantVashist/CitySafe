@@ -4,6 +4,7 @@ import traceback
 import sys
 import pandas as pd
 import numpy as np
+from collections import Counter
 
 app = Flask(__name__)
 CORS(app)
@@ -11,17 +12,34 @@ CORS(app)
 df = pd.read_pickle('IPC(Examined_Levels).pkl')
 df1 = pd.read_pickle('IPC(Final).pkl')
 cols = df.columns
-
-print()
+weights = [1,0.1,0.2,0.3,0.7,0.2,0.8,0,0,0,1,1,0.5,1,0.2,0.1,0.4,0.5,0.9,0,0,0,1,0.3,0.1]
+df['Rating'] = sum([weights*df[col] for weights, col in zip(weights, cols[1:-2])])
 
 def find_district(latitude, longitude):
-    df['distance'] = df[df.columns[-1]].map(tuple).map(lambda x: (float(x[0]) - latitude)**2 + (float(x[1]) - longitude)**2)
+    df['distance'] = df[df.columns[-2]].map(tuple).map(lambda x: (float(x[0]) - latitude)**2 + (float(x[1]) - longitude)**2)
     x = np.where(df['distance'] == df['distance'].min())[0][0]
     del df['distance']
     return x
 
-@app.route('/coords/<latitude>/<longitude>', methods=["GET"])
+def analyse_paths(paths):
+    best_rating, best_index = 999999, -1
+    for idx, path in enumerate(paths):
+        temp = Counter()
+        for node in path:
+            temp[find_district(node[0], node[1])] += 1
+        sum_, max_, count_ = 0, 0, 0
+        for key, freq in temp.items():
+            temp_holder = df.loc[key, 'Rating']
+            sum_ += temp_holder*freq
+            count_ += freq
+            max_ = max(max_, temp_holder)
+        current_rating = sum_ + (sum_/count_) + max_
+        if current_rating < best_rating:
+            best_rating = current_rating
+            best_index = idx
+    return best_index
 
+@app.route('/coords/<latitude>/<longitude>', methods=["GET"])
 def coords(latitude, longitude):
     if request.method == "GET":        
         output = {}
@@ -37,12 +55,14 @@ def coords(latitude, longitude):
         # output = sorted(output, key=lambda x: , reverse=True)
         return output
     
-@app.route('/safepath', methods=["POST"])
-
+@app.route('/safepath', methods=["GET","POST"])
 def bestpath():
     if request.method == "POST":
-        # print(len(request.form["routes"]));
-        print("This should be printed everytime you make a request");
-        return "3";
+        # print(len(request.form["routes"]))
+        output = analyse_paths(paths)
+        if output == -1:
+            return "No paths found!"
+        return str(output)
+    return "No POST form found!"
 
 app.run(debug=True)
