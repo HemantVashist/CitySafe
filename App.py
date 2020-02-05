@@ -1,5 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
+import sys
+import json
 import traceback
 import sys
 import pandas as pd
@@ -57,8 +59,9 @@ def coords(latitude, longitude):
     
 @app.route('/safepath', methods=["GET","POST"])
 def bestpath():
-    if request.method == "POST":
-        # print(len(request.form["routes"]))
+    if request.method == "POST":                     
+        routes = json.loads(request.data)['routes']
+        paths = [[[float(x), float(y)] for x, y in routes[idx]['geometry']['coordinates']] for idx in range(len(routes))]
         output = analyse_paths(paths)
         if output == -1:
             return "No paths found!"
