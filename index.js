@@ -68,7 +68,12 @@ var guidelines = {
     "Stalking":[
       "Call the national helpline 112 if you see anyone suspicious following you.",
       "Avoid staying out after dark."
-    ]
+    ],
+    "Road Hazard":[
+      "Information1 to be added",
+      "Information2 to be added"  
+    ],
+    
 };
 
 var phones = [918130858595,918619247487]
@@ -110,7 +115,13 @@ app.post("/",(req,res)=>{
   res.send({redirect: "/"})
 })
 
-app.post('/map',(req,res)=>{
+app.get('/safe-map',(req,res)=>{
+
+    res.render("safe-map");
+
+})
+
+app.get('/map',(req,res)=>{
 
   if(u1.coordinates_sos.latitude!=undefined && u1.coordinates_sos.longitude!=undefined){
     res.render("map",{user:u1})

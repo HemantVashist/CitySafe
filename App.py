@@ -1,10 +1,13 @@
 from flask import Flask, request
+from flask_cors import CORS
 import traceback
 import sys
 import pandas as pd
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)
+
 df = pd.read_pickle('IPC(Examined_Levels).pkl')
 df1 = pd.read_pickle('IPC(Final).pkl')
 cols = df.columns
@@ -31,6 +34,15 @@ def coords(latitude, longitude):
         for x, y, z in temp[:3]:
             output[x] = {'Percentage': y, 'Last year reported cases': z}
         # output['Name of district'] = name
+        # output = sorted(output, key=lambda x: , reverse=True)
         return output
     
+@app.route('/safepath', methods=["POST"])
+
+def bestpath():
+    if request.method == "POST":
+        # print(len(request.form["routes"]));
+        print("This should be printed everytime you make a request");
+        return "3";
+
 app.run(debug=True)
