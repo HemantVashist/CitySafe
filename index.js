@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.static(__dirname+"/public"))
 app.use(cors())
 
+
 const db = require("./config/keys").mongoURI;
 
 mongoose
@@ -70,20 +71,17 @@ var guidelines = {
     ]
 };
 
-// var phones = [918******595,918******487]
-var phones = []
+var phones = [918130858595,918619247487]
 
 const nexmo = new Nexmo({
-  apiKey: '<apikey>',
-  apiSecret: '<apisecret>',
+  apiKey: 'd3171a29',
+  apiSecret: 'supp7XbuvpuWq89X',
 });
 
 app.get('/',(req,res)=>{
   
 
   var uri = `http://localhost:5000/coords/${u1.coordinates_gl.latitude}/${u1.coordinates_gl.longitude}`
-
-  // console.log(uri);
 
   if(u1.coordinates_gl.latitude && u1.coordinates_gl.longitude){
     request.get({
@@ -109,7 +107,6 @@ app.get('/',(req,res)=>{
 app.post("/",(req,res)=>{
   u1.coordinates_gl.latitude = req.body.coords.latitude
   u1.coordinates_gl.longitude = req.body.coords.longitude
-  // res.redirect(req.get('referer'))
   res.send({redirect: "/"})
 })
 
@@ -133,22 +130,23 @@ app.post("/contact",(req,res)=>{
   var link = "https://link.foruser.location"
   var msg = `${u1.name} might be in danger. See more at ${link}`
 
-  // phones.forEach((phone)=>{
-  //   nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       if(responseData.messages[0]['status'] === "0") {
-  //         console.log("Message sent successfully.");
-  //       } else {
-  //         console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-  //       }
-  //     }
-  //   })
-  // })
-  // res.redirect("/");
+  phones.forEach((phone)=>{
+    nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if(responseData.messages[0]['status'] === "0") {
+          console.log("Message sent successfully.");
+        } else {
+          console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+        }
+      }
+    })
+  })
   res.send({redirect: "/"})
 })
+
+app.get("/")
 
 port = process.env.PORT || 8083
 app.listen(port,()=>{
