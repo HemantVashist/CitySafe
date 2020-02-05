@@ -3,12 +3,16 @@ body {
   padding:0; 
 }
 
+#content {
+  margin: 5rem auto;
+}
+
 #sos {
   background:crimson;
   margin: 30px;
-  padding: 120px 110px;
-  border-radius: 150px;
-  font-size: xx-large;
+  padding: 105px 90px;
+  border-radius: 225px;
+  font-size: 7rem;
   color:white;
 }
 
@@ -41,4 +45,17 @@ body {
   background-color: rgba(255,255,255,0.9);
   overflow-y: scroll;
   font-family: sans-serif;
+}
+
+nav input {
+  width: 35.3%;
+}
+
+@media only screen and (max-width:768px) {
+  nav .btn{
+    width: 100%;
+  }
+  nav input {
+    width: 49.5%;
+  }
 }
