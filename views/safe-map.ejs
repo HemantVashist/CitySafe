@@ -51,6 +51,7 @@
         background-color: rgba(255,255,255,0.9);
         overflow-y: scroll;
         font-family: sans-serif;
+        /*background-color:blue;*/
     }
 
 </style>
@@ -167,33 +168,51 @@
         req.open('GET', url, true);
         req.onload  = function() {
             var jsonResponse = req.response;
-            console.log(jsonResponse.routes)
+
+            console.log(typeof(jsonResponse));
+            console.log(jsonResponse)
 
             var index = 0; 
 
             //Calling python server api
 
+            $.ajax({
+                type:"POST",
+                url:"https://citysafeflaskapi.herokuapp.com/safepath",
+                data:JSON.stringify(jsonResponse),
+                contentType: 'application/json; charset:UTF-8',
+                success: function (response) {
+                    console.log("In Success Function!!")
+                    response = JSON.parse(response);
+                    index = parseInt(response['output']);
+                    console.log(index);   
+                    var distance = jsonResponse.routes[index].distance*0.001;
+                    var duration = jsonResponse.routes[index].duration/60;
+                    var steps = jsonResponse.routes[index].legs[0].steps;
+                    var coords = jsonResponse.routes[index].geometry;
+                //  console.log(steps);
+                    console.log(coords);
+                //  console.log(distance);
+                // console.log(duration);
 
-            var distance = jsonResponse.routes[index].distance*0.001;
-            var duration = jsonResponse.routes[index].duration/60;
-            var steps = jsonResponse.routes[index].legs[0].steps;
-            var coords = jsonResponse.routes[index].geometry;
-          //  console.log(steps);
-        console.log(coords);
-         //  console.log(distance);
-          // console.log(duration);
+                    // get route directions on load map
+                    steps.forEach(function(step){
+                        instructions.insertAdjacentHTML('beforeend', '<p>' + step.maneuver.instruction + '</p>');
+                    });
+                    // get distance and duration
+                    instructions.insertAdjacentHTML('beforeend', '<p>' +  'Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes' + '</p>');
 
-            // get route directions on load map
-            steps.forEach(function(step){
-                instructions.insertAdjacentHTML('beforeend', '<p>' + step.maneuver.instruction + '</p>');
-            });
-            // get distance and duration
-            instructions.insertAdjacentHTML('beforeend', '<p>' +  'Distance: ' + distance.toFixed(2) + ' km<br>Duration: ' + duration.toFixed(2) + ' minutes' + '</p>');
+                    // add the route to the map
+                    addRoute(coords);
+                //  console.log(coordinates);
 
-            // add the route to the map
-            addRoute(coords);
-          //  console.log(coordinates);
 
+                },
+                error: function () {
+                    // alert("error");
+                    console.log("Error Occurred");
+                }
+            })
         };
         req.send();
     }
