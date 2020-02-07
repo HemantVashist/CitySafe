@@ -11,3 +11,11 @@ _CitySafe_ is a citizen safety web application made to provide assistance in the
 
 [QnA](https://docs.google.com/document/d/1_iYxuZkzPPWin5vB-RfZBs0stvU6H5lE-2lBi6jMgnw/edit?usp=sharing)
 
+[Documentation to install Python dependencies](https://docs.google.com/document/d/1T_CsN6JZAV4d9so_iIuSJNf30Fm3LkZvPCCYd7nJh7k/edit?usp=sharing)
+
+[Documentation to install web dependencies](https://docs.google.com/document/d/1xrdDSLhHETveBCNmp2sxqT_WjHtM7i9ghLBWz_SRes4/edit?usp=sharing)
+
+[Documentation to deploy the app on Heroku](https://docs.google.com/document/d/16boQfYcwNFsV6Qf7OcmlVMRopNNQnTTI3hWrmVFKtSA/edit?usp=sharing)
+
+[Tutorial YouTube Video](https://youtu.be/KStahw-ciRk)
+
