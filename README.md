@@ -6,3 +6,8 @@ _CitySafe_ is a citizen safety web application made to provide assistance in the
 
 
 [Sample Call on Deployed flask server](https://citysafeflaskapi.herokuapp.com/coords/192/32)
+
+[Presentation](https://docs.google.com/presentation/d1zNuDngyaTHCC0ojoilqWa-SBpH6fTjCY3_V_BjjGNe4/edit?usp=sharing)
+
+[QnA](https://docs.google.com/document/d/1_iYxuZkzPPWin5vB-RfZBs0stvU6H5lE-2lBi6jMgnw/edit?usp=sharing)
+
