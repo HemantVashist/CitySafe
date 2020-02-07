@@ -34,16 +34,16 @@ var User = require("./models/User")
 
 var guidelines = {
     "Assault on Women":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Always keep a tool for self-defence handy - like a pepper spray.",
+      "Travel in groups. Avoid sparsely populated areas."
     ],
     "Fraudulent Activity":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Don’t pay upfront for a promised product.",
+      "Do not believe anyone claiming to be from an agency until proper identification is provided"
     ],
     "Road Accidents":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Limit driving time to day unless necessary",
+      "Assume others are likely to drive recklessly"
     ],
     "Murder":[
       "Always keep a tool for self-defence handy - like a pepper spray.",
@@ -69,8 +69,8 @@ var guidelines = {
       "Avoid staying out after dark."
     ],
     "Road Hazard":[
-      "Information1 to be added",
-      "Information2 to be added"  
+      "Drive near the center of road and follow tire tracks of car in front of you",
+      "Avoid puddles of water and the curb of the road"  
     ],
     
 };
