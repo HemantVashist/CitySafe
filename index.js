@@ -1,41 +1,49 @@
-const express = require("express")
+const express = require("express") //random Comment to change heroku 
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const Nexmo = require("nexmo")
 const request = require('request')
+var session = require('express-session');
 var app = express()
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
 app.set("view engine","ejs")
 app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(express.static(__dirname+"/public"))
 app.use(cors())
 
+var apiDomain = "https://citysafeflaskapi.herokuapp.com"
 var User = require("./models/User")
 
-var u1 = {
-  name: "Hemant",
-  coordinates_sos: {
-    latitude: undefined,
-    longitude: undefined
-  },
-  coordinates_gl: {
-    latitude: undefined,
-    longitude: undefined
-  }
-};
+// var u1 = {
+//   name: "Hemant",
+//   coordinates_sos: {
+//     latitude: undefined,
+//     longitude: undefined
+//   },
+//   coordinates_gl: {
+//     latitude: undefined,
+//     longitude: undefined
+//   }
+// };
 
 var guidelines = {
     "Assault on Women":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Always keep a tool for self-defence handy - like a pepper spray.",
+      "Travel in groups. Avoid sparsely populated areas."
     ],
     "Fraudulent Activity":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Don’t pay upfront for a promised product.",
+      "Do not believe anyone claiming to be from an agency until proper identification is provided"
     ],
     "Road Accidents":[
-      "Information1 to be added",
-      "Information2 to be added"
+      "Limit driving time to day unless necessary",
+      "Assume others are likely to drive recklessly"
     ],
     "Murder":[
       "Always keep a tool for self-defence handy - like a pepper spray.",
@@ -61,13 +69,14 @@ var guidelines = {
       "Avoid staying out after dark."
     ],
     "Road Hazard":[
-      "Information1 to be added",
-      "Information2 to be added"  
+      "Drive near the center of road and follow tire tracks of car in front of you",
+      "Avoid puddles of water and the curb of the road"  
     ],
     
 };
 
-var phones = [918130858595,918619247487]
+var phones = [918130116311,918130858595,918619247487]
+// var phones = [918619247487]
 
 const nexmo = new Nexmo({
   apiKey: 'd3171a29',
@@ -77,10 +86,23 @@ const nexmo = new Nexmo({
 })
 
 app.get('/',(req,res)=>{
-  
-  var uri = `http://localhost:5000/coords/${u1.coordinates_gl.latitude}/${u1.coordinates_gl.longitude}`
+  if(!req.session.u1){
+    req.session.u1 = {
+      name: "Hemant",
+      coordinates_sos: {
+        latitude: undefined,
+        longitude: undefined
+      },
+      coordinates_gl: {
+        latitude: undefined,
+        longitude: undefined
+      }
+    };
+  }
+  var uri = apiDomain+`/coords/${req.session.u1.coordinates_gl.latitude}/${req.session.u1.coordinates_gl.longitude}`
+  console.log(uri)
 
-  if(u1.coordinates_gl.latitude && u1.coordinates_gl.longitude){
+  if(req.session.u1.coordinates_gl.latitude && req.session.u1.coordinates_gl.longitude){
     request.get({
       url:uri,
       json:true,
@@ -92,7 +114,7 @@ app.get('/',(req,res)=>{
           console.log('Status:', res.statusCode);
         } else {
           // data is already parsed as JSON:
-          // console.log(data);
+          console.log(data);
           res.render("home",{data:data,guides:guidelines,found:true});     
         }
     });
@@ -102,8 +124,8 @@ app.get('/',(req,res)=>{
 })
 
 app.post("/",(req,res)=>{
-  u1.coordinates_gl.latitude = req.body.coords.latitude
-  u1.coordinates_gl.longitude = req.body.coords.longitude
+  req.session.u1.coordinates_gl.latitude = req.body.coords.latitude
+  req.session.u1.coordinates_gl.longitude = req.body.coords.longitude
   res.send({redirect: "/"})
 })
 
@@ -115,6 +137,26 @@ app.get('/safe-map',(req,res)=>{
 
 app.get('/map',(req,res)=>{
 
+  if(req.session.u1.coordinates_sos.latitude!=undefined && req.session.u1.coordinates_sos.longitude!=undefined){
+    res.render("map",{user:req.session.u1})
+  }else{
+    res.send("Press SOS button before map view")
+  }
+
+})
+
+app.get('/map_withcoords',(req,res)=>{
+  var u1 = {
+    name: "Hemant",
+    coordinates_sos: {
+      latitude: req.query.lat,
+      longitude: req.query.lon
+    },
+    coordinates_gl: {
+      latitude: undefined,
+      longitude: undefined
+    }
+  };
   if(u1.coordinates_sos.latitude!=undefined && u1.coordinates_sos.longitude!=undefined){
     res.render("map",{user:u1})
   }else{
@@ -133,12 +175,14 @@ app.post("/call",(req,res)=>{
 app.post("/contact",(req,res)=>{
 
   //getting location coords from client
-  u1.coordinates_sos.latitude = req.body.coords.latitude
-  u1.coordinates_sos.longitude = req.body.coords.longitude
+  req.session.u1.coordinates_sos.latitude = req.body.coords.latitude
+  req.session.u1.coordinates_sos.longitude = req.body.coords.longitude
+  console.log(req.session.u1.coordinates_sos.latitude)
 
   //SMS API
-  var link = "https://link.foruser.location"
-  var msg = `${u1.name} might be in danger. See more at ${link}`
+  var link = "https://citysafe-sih.herokuapp.com/map_withcoords?lon="+req.session.u1.coordinates_sos.longitude+"&lat="+req.session.u1.coordinates_sos.latitude
+  console.log(link)
+  var msg = `${req.session.u1.name} might be in danger. See more at ${link}`
 
   phones.forEach((phone)=>{
     nexmo.message.sendSms("CitySafe",phone,msg,(err, responseData) => {
@@ -163,7 +207,7 @@ function makeCall(phoneNumber){
     {
       action: 'talk',
       voiceName: 'Kendra',
-      text: 'You are welcome.',
+      text: 'Hi , How are you? This call will now disconnect',
     },
   ];
   nexmo.calls.create({
