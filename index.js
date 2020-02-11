@@ -75,14 +75,13 @@ var guidelines = {
     
 };
 
-var phones = [918130116311,918130858595,918619247487]
-// var phones = [918619247487]
+var phones = []
 
 const nexmo = new Nexmo({
-  apiKey: 'd3171a29',
-  apiSecret: 'supp7XbuvpuWq89X',
-  applicationId: 'b2b51d05-84a0-4949-837b-8abccdf6c62d',
-  privateKey: './private.key'
+  apiKey: '<apikey>',
+  apiSecret: '<apisecret>',
+  applicationId: '<appid>',
+  privateKey: '<private key>'
 })
 
 app.get('/',(req,res)=>{
